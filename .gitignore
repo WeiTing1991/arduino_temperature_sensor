@@ -3,6 +3,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# .gitignore
+__pycache__/
+__vscode__/
+
 # Prerequisites
 *.d
 

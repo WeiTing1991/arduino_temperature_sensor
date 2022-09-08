@@ -1,6 +1,0 @@
-{
-    "board": "arduino:avr:uno",
-    "programmer": "arduino:avrispmkii",
-    "port": "COM5",
-    "sketch": "src\\arduino_temperature_sensor\\arduino\\sensor\\sensor.ino"
-}
