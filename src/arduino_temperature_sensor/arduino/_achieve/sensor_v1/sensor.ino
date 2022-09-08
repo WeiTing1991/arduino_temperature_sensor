@@ -1,19 +1,25 @@
 // ***********************************************************************************
 // 
-// PROJECT     :  temperature sensor
+// PROJECT     :  temperature sensor V1 for arduino version
 // 
 // FUNCTION    :  sensor
 // 
 // AUTHOR      :  Wei-Ting Chen
-// 
-// EMAIL       :  
+//
+// Reference   :  https://arduinojson.org/v6/api/jsondocument/
+//                https://www.arduino.cc/reference/en/
+//
+//
 //
 // ***********************************************************************************
 
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <LiquidCrystal_I2C.h>
+#include <ArduinoJson.h>
 
+
+// *****************************************************************
 // define the display type
 LiquidCrystal_I2C lcd (0x27, 20,  4);
 
@@ -26,10 +32,22 @@ OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 int index = 0 ;
 
+// To store in the heap
+// that implicitly becomes an object
+DynamicJsonDocument doc(1024);
+
+// Useful :
+
+// *****************************************************************
+
+
+
+//******************************************************************
+// Main setup
 void setup(void)
 {
   // start serial port
-  Serial.begin(2400);
+  Serial.begin(9600);
   Serial.println("Temperature Sensor");
 
   // Start up sensor
@@ -48,6 +66,12 @@ void setup(void)
   lcd.backlight();
   
 }
+//******************************************************************
+
+
+
+//******************************************************************
+// Function
 
 // print the temperature on screen
 void printTemperature(int index)
@@ -55,6 +79,7 @@ void printTemperature(int index)
   
   //float tempC = sensors.getTempC(deviceAddress);
   float tempC = sensors.getTempCByIndex(index);
+  int counter  = 0 ;
   if(tempC == DEVICE_DISCONNECTED_C) 
   {
     Serial.println("Error: Could not read temperature data");
@@ -62,8 +87,15 @@ void printTemperature(int index)
   }
   
   // print temperature
-  Serial.print("Temp C: ");
+  Serial.print("Temp C");
+  Serial.print(",");
   Serial.println(tempC);
+  
+  // To json file 
+  doc["Time"] = counter;
+  doc["temperature"] = tempC;
+  serializeJson(doc, Serial);
+
   //Serial.print(" Temp F: ");
   //Serial.println(DallasTemperature::toFahrenheit(tempC));
 
@@ -85,18 +117,24 @@ void printAddress(DeviceAddress deviceAddress)
   }
 }
 
+//******************************************************************
+//
+
+//******************************************************************
+// Main loop
 void loop(void)
 { 
   
-  // request to all devices on the bus and to issue a global temperature 
-  Serial.print("Requesting temperatures...");
+  // request to all devices on the bus and to issue a global temperature
+  Serial.println(" ");
+  Serial.println("Requesting temperatures...");
   sensors.requestTemperatures();
   Serial.println("DONE");
- 
+
+  // print the current temperature
   printTemperature(index);
   
+
 }
-
-
-
-
+//******************************************************************
+// Main loop
