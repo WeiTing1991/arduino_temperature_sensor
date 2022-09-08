@@ -1,4 +1,4 @@
-# arduino_temperature_sensor
+# Arduino temperature sensor
 
 This is the repositary for arduino temperature sensor and storing data via python 
 
